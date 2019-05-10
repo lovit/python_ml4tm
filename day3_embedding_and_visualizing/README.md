@@ -65,7 +65,7 @@ git clone https://github.com/lovit/soynlp
 pip install gensim
 ```
 
-4. [Bokeh >= 0.13.0](https://bokeh.pydata.org/en/latest/)
+4. [Bokeh >= 1.0.2](https://bokeh.pydata.org/en/latest/)
 
 ```
 pip install bokeh
