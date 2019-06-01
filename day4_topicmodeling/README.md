@@ -14,6 +14,8 @@ Day 4 에서는 scikit-learn 의 Singular Value Decomposition (SVD), Nonnegative
 
 `day4_a_gibbs_sampling_and_lda.ipynb` 은 `밑바닥부터 시작하는 데이터과학`의 LDA tutorials 코드입니다. 코드 설명은 저자의 책을 참고하시기 바랍니다.
 
+`day4_a_nmf_to_ldavis` 는 NMF 의 학습 결과를 토픽 모델링의 결과인 (문서, 토픽) 확률 행렬과 (토픽, 단어) 확률 행렬로 변환하는 예시입니다. 그리고 이 결과를 LDAvis 를 이용하여 시각화 하는 예시입니다.
+
 ## Requirements
 
 이 실습 코드에서는 아래의 외부 패키지를 이용합니다.
