@@ -10,13 +10,15 @@ from .utils import installpath
 
 
 class SimpleDataset(torch.utils.data.Dataset):
-    def __init__(self, x, y):
+    def __init__(self, x, y, lengths=None):
         super().__init__()
         self.x = x
         self.y = y
+        self.lengths = lengths
 
     def __getitem__(self, idx):
-        return self.x[idx], self.y[idx]
+        length = None if self.lengths is None else self.lengths[idx]
+        return self.x[idx], self.y[idx], length
 
     def __len__(self):
         return len(self.x)
@@ -76,17 +78,19 @@ def load_name_data_as_dataset(as_image=False, image_len=19, directory=None):
     for category, names in namedata:
         for name in names:
             # vectorize
+            length = len(name)
             if as_image:
                 xi = ascii_to_onehot(name, image_len)
             else:
                 xi = ascii_to_index_seq(name, image_len)
             yi = category_to_idx[category]
-            data.append((torch.LongTensor(xi), yi))
+            data.append((torch.LongTensor(xi), yi, length))
 
     # as Dataset
-    x, y = zip(*data)
+    x, y, lengths = zip(*data)
     y = torch.LongTensor(y)
-    dataset = SimpleDataset(x, y)
+    lengths = torch.LongTensor(lengths)
+    dataset = SimpleDataset(x, y, lengths)
 
     # wrap-up
     idx_to_category, _ = zip(*sorted(category_to_idx.items(), key=lambda x:x[1]))
