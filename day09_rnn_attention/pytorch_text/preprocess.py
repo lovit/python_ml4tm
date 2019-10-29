@@ -7,7 +7,9 @@ all_unicode_letters = string.ascii_letters + " .,;'"
 ascii_mapper = {c:idx for idx, c in enumerate(all_unicode_letters)}
 
 n_unicode_letters = len(all_unicode_letters)
-dim_unicode_letters = n_unicode_letters + 1
+dim_unicode_letters = n_unicode_letters + 1 # last index for unknown
+unkcode_unknown_idx = n_unicode_letters
+unicode_letter_padding_idx = dim_unicode_letters + 1 # last index for padding
 
 
 def unicode_to_ascii(s):
