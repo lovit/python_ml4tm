@@ -1,7 +1,25 @@
+import collections
 import glob
+import torch
+
 
 from .preprocess import unicode_to_ascii
+from .preprocess import ascii_to_onehot
+from .preprocess import ascii_to_index_seq
 from .utils import installpath
+
+
+class SimpleDataset(torch.utils.data.Dataset):
+    def __init__(self, x, y):
+        super().__init__()
+        self.x = x
+        self.y = y
+
+    def __getitem__(self, idx):
+        return self.x[idx], self.y[idx]
+
+    def __len__(self):
+        return len(self.x)
 
 
 def load_name_data(directory=None):
@@ -24,3 +42,53 @@ def load_name_data(directory=None):
             names = [unicode_to_ascii(name.strip()) for name in f]
         rawdata.append((category, names))
     return rawdata
+
+def load_name_data_as_dataset(as_image=False, image_len=-1, directory=None):
+    """
+    Arguments
+    ---------
+    as_image : Boolean
+        If True, it returns name which encoded as onehot image vector.
+        False, it returns name which encoded as integer sequence.
+    image_len : int
+        If you set as_imgae True, you can specify the image length.
+        Default is -1
+
+    Returns
+    -------
+    dataset : torch.utils.data.Dataset
+    idx_to_category : list of str
+        Category list
+
+    Usage
+    -----
+        >>> dataset, idx_to_category = load_name_data_as_dataset(
+                as_image=False, image_len=-1)
+    """
+
+    # load data
+    namedata = load_name_data(directory)
+
+    # prepare to transform Dataset
+    category_to_idx = collections.defaultdict(lambda: len(category_to_idx))
+    data = []
+
+    for category, names in namedata:
+        for name in names:
+            # vectorize
+            if as_image:
+                xi = ascii_to_onehot(name, image_len)
+            else:
+                xi = ascii_to_index_seq(name)
+            yi = category_to_idx[category]
+            data.append((torch.LongTensor(xi), yi))
+
+    # as Dataset
+    x, y = zip(*data)
+    y = torch.LongTensor(y)
+    dataset = SimpleDataset(x, y)
+
+    # wrap-up
+    idx_to_category, _ = zip(*sorted(category_to_idx.items(), key=lambda x:x[1]))
+
+    return dataset, idx_to_category
