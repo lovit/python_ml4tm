@@ -79,7 +79,7 @@ def load_name_data_as_dataset(as_image=False, image_len=19, directory=None):
             if as_image:
                 xi = ascii_to_onehot(name, image_len)
             else:
-                xi = ascii_to_index_seq(name)
+                xi = ascii_to_index_seq(name, image_len)
             yi = category_to_idx[category]
             data.append((torch.LongTensor(xi), yi))
 

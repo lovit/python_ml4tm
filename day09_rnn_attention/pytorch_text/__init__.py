@@ -10,6 +10,6 @@ from .preprocess import ascii_to_index_seq
 
 # values
 from .preprocess import unicode_letter_padding_idx
-from .preprocess import dim_unicode_letters
-from .preprocess import unkcode_unknown_idx
+from .preprocess import unicode_letters_dim
+from .preprocess import unicode_letter_unknown_idx
 from .utils import installpath
