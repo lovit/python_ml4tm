@@ -49,12 +49,12 @@ def ascii_to_onehot(s, image_len=-1):
     -----
     """
     if image_len > 0:
-        s = s[:max_len]
+        s = s[:image_len]
     else:
         image_len = len(s)
 
     index_seq = ascii_to_index_seq(s)
-    image = sequence_to_onehot(index_seq, dim_unicode_letters)
+    image = sequence_to_onehot(index_seq, dim_unicode_letters, image_len)
     return image
 
 def sequence_to_onehot(seq, dim, image_len=-1):

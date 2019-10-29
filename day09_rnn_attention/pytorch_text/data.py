@@ -43,7 +43,7 @@ def load_name_data(directory=None):
         rawdata.append((category, names))
     return rawdata
 
-def load_name_data_as_dataset(as_image=False, image_len=-1, directory=None):
+def load_name_data_as_dataset(as_image=False, image_len=19, directory=None):
     """
     Arguments
     ---------
@@ -52,7 +52,7 @@ def load_name_data_as_dataset(as_image=False, image_len=-1, directory=None):
         False, it returns name which encoded as integer sequence.
     image_len : int
         If you set as_imgae True, you can specify the image length.
-        Default is -1
+        Default is 19 which is the length of longest name
 
     Returns
     -------
