@@ -80,11 +80,14 @@ def load_name_data_as_dataset(as_image=False, image_len=19, directory=None):
             # vectorize
             length = len(name)
             if as_image:
+                # torch.FloatTensor
                 xi = ascii_to_onehot(name, image_len)
             else:
+                # torch.LongTensor
                 xi = ascii_to_index_seq(name, image_len)
+                xi = torch.longTensor(xi)
             yi = category_to_idx[category]
-            data.append((torch.LongTensor(xi), yi, length))
+            data.append((xi, yi, length))
 
     # as Dataset
     x, y, lengths = zip(*data)

@@ -71,7 +71,7 @@ def sequence_to_onehot(seq, dim, image_len=-1):
     """
     if image_len < 0:
         image_len = len(seq)
-    image = torch.zeros(image_len, dim, dtype=torch.long)
+    image = torch.zeros(image_len, dim, dtype=torch.float)
     for i, j in enumerate(seq):
         image[i,j] = 1
     return image
