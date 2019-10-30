@@ -1,4 +1,6 @@
+import torch
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+
 
 def train_batch(model, data_loader, loss_func, optimizer,
     epoch, epochs, num_batches, verbose_batch=50, new_line=False):
