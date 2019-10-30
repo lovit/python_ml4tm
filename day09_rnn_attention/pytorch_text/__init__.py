@@ -7,6 +7,8 @@ from .preprocess import unicode_to_ascii
 from .preprocess import ascii_to_onehot
 from .preprocess import sequence_to_onehot
 from .preprocess import ascii_to_index_seq
+from .train import train_batch
+from .utils import time_from_t
 
 # values
 from .preprocess import unicode_letter_padding_idx
