@@ -41,7 +41,7 @@ class RNNClassifier(nn.Module):
             self.layer = nn.RNN(input_size, hidden_size, num_layers,
                 bias, batch_first, dropout, bidirectional)
 
-        self.h2o = nn.Linear(self.num_directions * hidden_size, output_size)
+        self.h2o = nn.Linear(self.num_directions * hidden_size, output_size, bias=False)
 
     def forward(self, input, hidden=None):
         """
