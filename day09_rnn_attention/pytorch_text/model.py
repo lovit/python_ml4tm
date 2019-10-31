@@ -7,7 +7,8 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 class RNNClassifier(nn.Module):
     def __init__(self, input_size, hidden_size, output_size, num_layers=1,
-        bias=True, batch_first=True, dropout=0., bidirectional=False, mode='gru'):
+        bias=True, batch_first=True, dropout=0., bidirectional=False,
+        mode='gru', embedding=None, num_vocab=-1):
 
         super().__init__()
 
@@ -23,6 +24,13 @@ class RNNClassifier(nn.Module):
         self.is_lstm = mode == 'lstm'
         self.num_directions = 1 + bidirectional
 
+        # prepare embedding layer
+        if (embedding is None) and (num_vocab > 0):
+            embedding = nn.Embedding(num_vocab+1, input_size, padding_idx=num_vocab)
+        elif embedding is not None:
+            assert embedding.weight.size()[1] == input_size
+        self.embedding = embedding
+
         if mode == 'gru':
             self.layer = nn.GRU(input_size, hidden_size, num_layers,
                 bias, batch_first, dropout, bidirectional)
@@ -36,8 +44,21 @@ class RNNClassifier(nn.Module):
         self.h2o = nn.Linear(self.num_directions * hidden_size, output_size)
 
     def forward(self, input, hidden=None):
-        # Assume that input is batch_first; shape = (batch size, sequence length, input size)
-        # or PackedSequence
+        """
+        Assume that input is batch_first; shape = (batch size, sequence length, input size)
+        or PackedSequence.
+
+        If input type is LongTensor, use embedding layer to transform
+        integer sequence to vector sequence.
+        """
+        if isinstance(input[0], torch.LongTensor):
+            if isinstance(input, PackedSequence):
+                inp_sequence, lengths, sorted_indices, unsorted_indices = input
+                inp_sequence = self.embedding(inp_sequence)
+                input = PackedSequence(inp_sequence, lengths, sorted_indices, unsorted_indices)
+            else:
+                input = self.embedding(input)
+
         out, hn = self.layer(input, hidden)
 
         if self.is_lstm:
