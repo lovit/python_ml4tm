@@ -1,7 +1,7 @@
 import collections
 import glob
 import torch
-
+import numpy as np
 
 from .preprocess import unicode_to_ascii
 from .preprocess import ascii_to_onehot
@@ -24,7 +24,7 @@ class SimpleDataset(torch.utils.data.Dataset):
         return len(self.x)
 
 
-def load_name_data(directory=None):
+def load_name_data(directory=None, balanced=False):
     """
     Returns
     -------
@@ -33,19 +33,36 @@ def load_name_data(directory=None):
          (category, [name, name, ... ]),
          ...
         ]
+    balanced : Boolean
+        If True, over-sampling to balance class distribution
     """
     if directory is None:
         directory = '{}/data/names/'.format(installpath)
 
+    max_num_names = 0
     rawdata = []
     for path in glob.glob('{}/*.txt'.format(directory)):
         category = path.split('/')[-1][:-4]
         with open(path, encoding='utf-8') as f:
             names = [unicode_to_ascii(name.strip()) for name in f]
+        max_num_names = max(max_num_names, len(names))
         rawdata.append((category, names))
-    return rawdata
+    # over sampling
+    if balanced:
+        return_data = []
+        for category, names in rawdata:
+            num_names = len(names)
+            if num_names == max_num_names:
+                return_data.append((category, names))
+                continue
+            sample_indices = np.random.random_integers(0, high=num_names, size=max_num_names)
+            over_sampled = [names[i] for i in sample_indices]
+            return_data.append((category, over_sampled))
+    else:
+        return_data = rawdata
+    return return_data
 
-def load_name_data_as_dataset(as_image=False, image_len=19, directory=None):
+def load_name_data_as_dataset(as_image=False, image_len=19, balanced=False, directory=None):
     """
     Arguments
     ---------
@@ -69,7 +86,7 @@ def load_name_data_as_dataset(as_image=False, image_len=19, directory=None):
     """
 
     # load data
-    namedata = load_name_data(directory)
+    namedata = load_name_data(directory, balanced)
 
     # prepare to transform Dataset
     category_to_idx = collections.defaultdict(lambda: len(category_to_idx))
