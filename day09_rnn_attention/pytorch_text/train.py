@@ -13,6 +13,8 @@ def train_batch(model, data_loader, loss_func, optimizer,
         loss_sum : torch.FloatTensor
     """
 
+    # (correct, incorrect)
+    num_corrects = torch.zeros(2, dtype=torch.float)
     loss_sum = torch.FloatTensor([0])
     for i_batch, (x_batch, y_batch, len_batch) in enumerate(data_loader):
 
@@ -38,10 +40,17 @@ def train_batch(model, data_loader, loss_func, optimizer,
         # cumulate temporal loss
         loss_sum += loss.detach()
 
+        # train accuracy
+        _, y_pred_idx = torch.max(y_pred, dim=1)
+        n_correct = (y_pred_idx == sorted_y_batch).sum()
+        num_corrects[0] += n_correct
+        num_corrects[1] += (len(len_batch) - n_correct)
+
         if i_batch % verbose_batch == 0:
             verbose(epoch, epochs, i_batch, num_batches, loss_sum, new_line)
     verbose(epoch, epochs, i_batch, num_batches, loss_sum, new_line)
-    return model, loss_sum
+    train_accuracy = num_corrects[0] / num_corrects.sum()
+    return model, loss_sum, train_accuracy
 
 def verbose(epoch, epochs, i_batch, num_batches, loss_sum, new_line=False):
     loss_avg = float(loss_sum.numpy() / (1 + i_batch))
