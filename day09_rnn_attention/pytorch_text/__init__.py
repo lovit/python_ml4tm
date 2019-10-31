@@ -10,6 +10,7 @@ from .preprocess import sequence_to_onehot
 from .preprocess import ascii_to_index_seq
 from .train import train_batch
 from .utils import time_from_t
+from .utils import random_select
 
 # values
 from .preprocess import unicode_letter_padding_idx

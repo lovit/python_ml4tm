@@ -85,7 +85,7 @@ def load_name_data_as_dataset(as_image=False, image_len=19, directory=None):
             else:
                 # torch.LongTensor
                 xi = ascii_to_index_seq(name, image_len)
-                xi = torch.longTensor(xi)
+                xi = torch.LongTensor(xi)
             yi = category_to_idx[category]
             data.append((xi, yi, length))
 
