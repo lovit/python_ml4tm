@@ -23,9 +23,13 @@ def train_batch(model, data_loader, loss_func, optimizer,
         packed_in = pack_padded_sequence(x_batch, len_batch,
             batch_first=True, enforce_sorted=False)
 
+        # sorted y batch
+        _, _, sorted_indices, _ = packed_in
+        sorted_y_batch = y_batch[sorted_indices]
+
         # define loss
-        y_pred = model(x_batch)
-        loss = loss_func(y_pred, y_batch)
+        y_pred = model(packed_in)
+        loss = loss_func(y_pred, sorted_y_batch)
 
         # back-propagation
         loss.backward()

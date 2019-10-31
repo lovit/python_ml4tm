@@ -4,12 +4,14 @@ import unicodedata
 
 
 all_unicode_letters = string.ascii_letters + " .,;'"
-ascii_mapper = {c:idx for idx, c in enumerate(all_unicode_letters)}
+ascii_mapper = {c:idx+2 for idx, c in enumerate(all_unicode_letters)}
+ascii_mapper['<pad>'] = 0
+ascii_mapper['<unk>'] = 1
 
 n_unicode_letters = len(all_unicode_letters)
-unicode_letters_dim = n_unicode_letters + 1 # last index for unknown
-unicode_letter_unknown_idx = n_unicode_letters
-unicode_letter_padding_idx = unicode_letters_dim + 1 # last index for padding
+unicode_letters_dim = n_unicode_letters + 2 # letters & <pad>, <unk>
+unicode_letter_unknown_idx = 1
+unicode_letter_padding_idx = 0
 
 
 def unicode_to_ascii(s):
@@ -84,9 +86,12 @@ def ascii_to_index_seq(s, image_len):
         $ [0, 1, 2]
 
         >>> ascii_to_index_seq('abc', image_len=5)
-        $ [0, 1, 2, 59, 59]
+        $ [2, 3, 4, 0, 0]
+
+        >>> ascii_to_index_seq('abc캭', image_len=5)
+        $ [2, 3, 4, 1, 0]
     """
-    idx_seq = [ascii_mapper.get(c, n_unicode_letters) for c in s]
+    idx_seq = [ascii_mapper.get(c, unicode_letter_unknown_idx) for c in s]
     if image_len > 0:
         idx_seq = idx_seq + [unicode_letter_padding_idx] * (image_len - len(idx_seq))
     return idx_seq

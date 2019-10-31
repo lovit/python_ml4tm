@@ -26,7 +26,7 @@ class RNNClassifier(nn.Module):
 
         # prepare embedding layer
         if (embedding is None) and (num_vocab > 0):
-            embedding = nn.Embedding(num_vocab+1, input_size, padding_idx=num_vocab)
+            embedding = nn.Embedding(num_vocab, input_size, padding_idx=0)
         elif embedding is not None:
             assert embedding.weight.size()[1] == input_size
         self.embedding = embedding
