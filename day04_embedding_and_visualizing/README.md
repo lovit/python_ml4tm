@@ -59,7 +59,7 @@ pip install soynlp
 git clone https://github.com/lovit/soynlp
 ```
 
-3. [Gensim >= 3.6.0](https://radimrehurek.com/gensim/)
+3. [Gensim >= 3.8.1](https://radimrehurek.com/gensim/)
 
 ```
 pip install gensim
@@ -75,4 +75,10 @@ pip install bokeh
 
 ```
 pip install scikit-learn
+```
+
+6. [fasttext](https://github.com/facebookresearch/fastText/tree/master/python)
+
+```
+pip install fasttext
 ```
