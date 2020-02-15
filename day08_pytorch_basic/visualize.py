@@ -12,7 +12,7 @@ def mscatter(p, x, y, size=5, fill_color="orange" , alpha=0.5, marker="circle"):
     p.scatter(x, y, marker=marker, size=size,
         fill_color= fill_color, alpha=alpha) 
 
-def scatter(x, y, title='', size=5, color='orange', height=600, width=600):
+def scatter(x, y, title='', size=5, color='orange', height=400, width=400):
     p = figure(title=title)
     p.width = width
     p.height = height
